@@ -129,12 +129,12 @@ $(() => {
     })
     //ログアウト処理
     $('#logout').on('click', () => {
-        socket.emit('logout');
+        socket.emit('logout')
         user = {}
-        chatArea.hide();
-        loginArea.fadeIn(FADE_TIME);
-    })
 
+        chatArea.hide()
+        loginArea.fadeIn(FADE_TIME)
+    })
     //ログアウト通知
     socket.on('user_left', (data) => {
         users = data.users
@@ -145,17 +145,16 @@ $(() => {
 
     //メッセージ送信
     $('#send').on('click', () => {
-        socket.emit('message',{
+        socket.emit('message', {
             message: message.val(),
             user: user,
         })
+        message.val() = ''
     })
-
     //メッセージ受信
     socket.on('message', (data) => {
-        createChatMessage(data);
+        createChatMessage(data)
     })
-
     //受信
     socket.on('logined', (data) => {
         user = data.user
@@ -169,11 +168,11 @@ $(() => {
         addMessage(message)
         updateUserList()
     })
-    //メッセージ送信
-    $('.stamp').on('click', () => {
-        stampList.toggle;
-    })
 
+    //スタンプ表示
+    $('.stamp').on('click', () => {
+        stampList.toggle()
+    })
     //スタンプ送信
     $('.uploadStamp').on('click', (event) => {
         const image = new Image()
@@ -185,19 +184,17 @@ $(() => {
             canvas.width = image.naturalWidth
             canvas.height = image.naturalHeight
             const ctx = canvas.getContext('2d')
-            ctx.drawImage(image,0,0)
+            //キャンバスに選択したスタンプ画像を貼り付け
+            ctx.drawImage(image, 0, 0)
+            //データエンコード
             const base64 = canvas.toDataURL(mime_type)
-            const data = {user: user, image: base64}
-
-            socket.emit('upload_stamp',data)
-
-            stampList.toggle()
+            const data = { user: user, image: base64}
+            //サーバに送信
+            socket.emit('upload_stamp', data)
         }
     })
-
     //スタンプ受信
     socket.on('load_stamp', (data) => {
-        createChatImage(data, {width: STAMP_WIDTH})
+        createChatImage(data, { width: STAMP_WIDTH })
     })
-    
 })

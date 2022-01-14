@@ -49,22 +49,24 @@ io.on('connection', (socket) => {
     socket.on('upload_stamp', (data) => {
         data.datetime = Date.now()
         console.log(data)
-        io.emit('load_stamp',data)
+        io.emit('load_stamp', data)
     })
-    
+
     const logout = (socket) => {
+        //ユーザ一覧からIDでユーザ取得
         const user = users[socket.id]
-        delete users[socket.io]
-        socket.broadcast.emit('user_left',{
+        //ユーザ一覧から削除
+        delete users[socket.id]
+        //ログアウトユーザ以外に通知
+        socket.broadcast.emit('user_left', {
             user: user,
             users: users,
         })
     }
 
     socket.on('logout', () => {
-        logout(socket);
+        logout(socket)
     })
-
     socket.on('disconnect', () => {
         console.log('disconnect')
         logout(socket)
